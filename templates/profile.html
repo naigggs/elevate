@@ -1,0 +1,246 @@
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Profile - {{ user.username }}</title>
+  <style>
+    .profile:before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+        left: 0;
+        top: 0;
+        background-image: url("{{ user.cover_img.url }}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        filter: blur(50px);
+        opacity: 0.7;
+    }
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'profileassets/dist/style.css' %}">
+
+</head>
+<body>
+  <div class="main">
+    <div style="display: flex; justify-content: space-between;" class="search-bar">
+      
+      <form method="get" action="{% url 'user_search' %}">
+        <input type="text" style="width: 1100px;" name="username" placeholder="Search users">
+        <!-- <button type="submit">Search</button> -->
+    </form>
+    <div style="padding-top: 23px; padding-right: 75px; margin-bottom: 10px;">
+      <span style="border-right: 1px solid #ebebeb; padding-right: 10px;">
+          {{request.user.first_name}} {{request.user.last_name}}
+      </span>
+      <a href="{% url 'friend_requests' %}" style="margin-left: 20px;">Friend Requests</a>
+      <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+      <a href="{% url 'profile' username=request.user.username %}" style="margin-left: 20px;">Profile</a>
+      <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+      <a href="{% url 'logout' %}"style="margin-left: 20px;">Logout</a>
+      <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+      {% if request.user.admin %}
+      <a href="{% url 'user_list' %}"style="margin-left: 20px;">User List</a>
+      <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+      <a href="{% url 'add_profanity_word' %}"style="margin-left: 20px;">Add Profanity Word</a>
+      <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+      
+{% else %}
+    <div></div>
+{% endif %}
+  </div>
+
+    
+  </div>
+  <div style="background-image: url('{{ user.background_img.url }}'); background-size: cover; background-position: center;" class="main-container">
+      <div class="profile">
+        <div class="profile-avatar">
+          <img src="{{ user.profile_img.url }}" alt="" class="profile-img">
+        </div>
+        <img src="{{ user.cover_img.url }}" alt="" class="profile-cover">
+        <div class="profile-menu">
+          <a class="profile-menu-link inactive">{{ user.first_name }} {{ user.last_name }}</a>
+          <a class="profile-menu-link active">Timeline</a>
+          {% if not is_profile_owner %}
+          {% if is_friends %}
+          <a href="{% url 'unfriend' user.username %}" style="padding-top: 20px; padding-left: 12px;" class="btn btn-danger" style="color: initial;">Unfriend</a>
+          {% else %}
+              <a href="{% url 'send_friend_request' user.id %}" style="padding-top: 20px; padding-left: 12px;" class="btn btn-primary">Send Friend Request</a>
+          {% endif %}
+      {% endif %}
+      <a href="{% url 'change_password' %}" style="padding-top: 20px; padding-left: 12px;" class="btn btn-primary">Change Password</a>
+        </div>
+    </div>
+      <div class="timeline">
+        <div class="timeline-left">
+          <div class="intro box">
+            <div class="intro-title">
+              Introduction
+              {% if request.user.username == user.username %}
+    <a class="intro-menu" style="border: 1px solid rgb(100, 100, 100);" href="{% url 'change_user_info' %}"></a>
+  {% else %}
+    <span class="intro-menu disabled"></span>
+  {% endif %}
+            </div>
+            <div class="info">
+              <div class="info-item">
+                <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>&nbsp;
+                @{{ user.username }}
+              </div>
+              <div class="info-item">
+                <label for="email"><i class="zmdi zmdi-email"></i></label>&nbsp;
+                {{ user.email }}
+              </div>
+              <div class="info-item">
+                <i class="zmdi zmdi-calendar-note"></i>&nbsp;
+                {{ user.date_joined|date:"F j, Y" }}
+              </div> <br>
+              <div style="word-wrap: break-word; overflow-wrap: break-word;">
+                {{ user.bio }}
+            </div>
+            </div>
+          </div>
+          <div class="pages box">
+            <div class="intro-title">
+              Friends
+          
+            </div>
+          <div>
+            <ul style="list-style-type: none;">
+              {% if user.profile.friends.all %}
+                  {% for friend in user.profile.friends.all %}
+                  <li>
+                      <div class="user">
+                          <a href="{% url 'profile' username=friend.user.username %}">
+                              <img src="{{ friend.user.profile_img.url }}" alt="" class="profile-img" style="width: 75px; height: 75px; object-fit: cover; margin-left: -30px;">
+                          </a>
+                          <div class="username">
+                            <a href="{% url 'profile' username=friend.user.username %}" style="text-decoration: none; font-family: 'Source Sans Pro', sans-serif; font-weight: bold; color: #5c5e6e;">
+                             &nbsp;&nbsp;&nbsp;&nbsp; {{ friend.user.first_name }} {{ friend.user.last_name }}
+                          </a>
+                          </div>
+                      </div>
+                  </li>
+                  {% endfor %}
+              {% else %}
+                  <p>No friends yet.</p>
+              {% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="pages box">
+        <div class="intro-title">
+          Recommended Friends
+      
+        </div>
+      <div>
+        <ul style="list-style-type: none;">
+          {% for friend in recommended_friends %}
+              <li>
+                  <div class="user">
+                    <a href="{% url 'profile' username=friend.username %}">
+                      <img src="{{ friend.profile_img.url }}" alt="" class="profile-img" style="width: 75px; height: 75px; object-fit: cover; margin-left: -30px;">
+                          <!-- <img src="{{ friend.user.profile_img.url }}" alt="" class="profile-img" > -->
+                      </a>
+                      <div class="username">
+                        <a href="{% url 'profile' username=friend.username %}" style="text-decoration: none; font-family: 'Source Sans Pro', sans-serif; font-weight: bold; color: #5c5e6e;">
+                         &nbsp;&nbsp;&nbsp;&nbsp; {{ friend.first_name }} {{ friend.last_name }}
+                      </a>
+                      </div>
+                  </div>
+              </li>
+              {% endfor %}
+      </ul>
+    </div>
+  </div>
+      </div>
+      <div class="timeline-right">
+        <div class="status box">
+          <div class="status-menu">
+            {% if request.user.profile in user.profile.friends.all or request.user.profile == user.profile or request.user.admin %}
+              <a class="status-menu-item active" href="#">Comment</a>
+       
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+            
+          </div>
+          <div class="status-main">
+            <img src="{{ logged_in_user.profile_img.url }}" class="status-img">
+            {{ comment_form.content }}  
+          </div>  
+          {{ comment_form.content.errors }}
+          <div class="status-actions">
+            {{ comment_form.post_img }}
+              <button class="status-share" type="submit">Add Comment</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="album box">
+          <img src="{{ user.img1.url }}" alt="img1" style="width: 221px; height: 566px; object-fit: cover;">
+          <img src="{{ user.img2.url }}" alt="img2" style="width: 221px; height: 566px; object-fit: cover;">
+          <img src="{{ user.img3.url }}" alt="img3" style="width: 221px; height: 566px; object-fit: cover;">
+          <img src="{{ user.img4.url }}" alt="img4" style="width: 221px; height: 566px; object-fit: cover;">
+          <img src="{{ user.img5.url }}" alt="img5" style="width: 221px; height: 566px; object-fit: cover;">
+          <img src="{{ user.img6.url }}" alt="img6" style="width: 221px; height: 566px; object-fit: cover;">
+        </div>
+
+            <div class="album box">
+              <ul style="list-style-type: none;">
+                {% for comment in comments %}
+                    <li>
+                      <div class="user">
+                        <a href="{% url 'profile' username=comment.user.username %}">
+                        <img src="{{ comment.user.profile_img.url }}" alt="" class="profile-img" style="width: 75px; height: 75px; object-fit: cover; margin-left: -30px;">
+                        </a>
+                        <div class="username">
+                        <a href="{% url 'profile' username=comment.user.username %}" style="text-decoration: none; font-family: 'Source Sans Pro', sans-serif; font-weight: bold; color: #5c5e6e; padding-left: 20px;">  
+                           {{ comment.user.first_name }} {{ comment.user.last_name }}
+                      </a>
+                    </div>
+                  </div>                    
+                  <a style="text-decoration: none; font-family: 'Source Sans Pro', sans-serif; color: #5c5e6e; padding-left: 64px;">
+                    {{ comment.content }}
+                    <div style="margin-top: 10px; margin-left: 25px;">
+                      {% if comment.post_img %}
+                      <img src="{{ comment.post_img.url }}" alt="Comment Image" style="width: 1080px; height: 566px; object-fit: cover;">
+                  {% else %}
+                      <!-- If no picture is uploaded, show a blank space or a placeholder image -->
+                      <div></div>
+                  {% endif %}
+                    </div>
+                  </a> <br><br><br>
+                  <a style="text-decoration: none; font-family: 'Source Sans Pro', sans-serif; color: #8a8989; padding-left: 64px;">
+                  <i>Commented on: {{comment.created_at}} </i>
+                </a>
+                {% if is_profile_owner or is_admin %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="comment_id_to_delete" value="{{ comment.id }}">
+                    <button class="status-delete" type="submit">
+                        <i class="zmdi zmdi-delete"></i>
+                    </button>
+                </form>
+            {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+          </div>
+         
+
+<!-- partial -->
+  <script src='https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.4/dist/alpine.js'></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>
+
+{% endblock %}

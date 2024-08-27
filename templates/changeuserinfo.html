@@ -1,0 +1,147 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Change User Info</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="main">
+        <button type="button" style="margin-left: 500px; margin-bottom: 20px; padding: 10px 20px; background-color: #3498db; color: white; border: none; cursor: pointer;">
+            <a href="{% url 'profile' username=request.user.username %}" style="text-decoration: none; color: white;">Go Back</a>
+        </button>
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Change User Info</h2>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="{{ form.first_name.id }}"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                {{ form.first_name }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.last_name.id }}"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                {{ form.last_name }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.username.id }}"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                {{ form.username }}
+                                {{ form.username.errors }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.email.id }}"><i class="zmdi zmdi-email"></i></label>
+                                {{ form.email }}
+                                {{ form.email.errors }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.profile_img.id }}">Profile Image</label>
+                                <div style="padding-left: 120px;">
+                                    {{ form.profile_img }}
+                                </div>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.cover_img.id }}">Cover Image</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.cover_img }}
+                            </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.background_img.id }}">Background <br> Image</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.background_img }}
+                            </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.bio.id }}">Bio</label>
+                                <div style="padding-left: 120px;">
+                            <textarea name="{{ form.bio.name }}" class="custom-textarea">{{ form.bio.value }}</textarea>
+                            </div>
+                            </div>
+                        
+                            <h3>Photo Gallery</h3>
+
+
+                            <div class="form-group">
+                                <label for="{{ form.img1.id }}">Image 1</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.img1 }}
+                            </div>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.img2.id }}">Image 2</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.img2 }}
+                            </div>
+                        </div>
+                            <div class="form-group">
+                                <label for="{{ form.img3.id }}">Image 3</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.img3 }}
+                            </div>
+                        </div>
+                            <div class="form-group">
+                                <label for="{{ form.img4.id }}">Image 4</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.img4 }}
+                            </div>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.img5.id }}">Image 5</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.img5 }}
+                            </div>
+                        </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.img6.id }}">Image 6</label>
+                                <div style="padding-left: 120px;">
+                                {{ form.img6 }}
+                            </div>
+                        </div>
+                        <div class="form-group form-button">
+                            <input type="submit" name="signup" id="signup" class="form-submit" value="Update"/>
+                            </div>
+                        </form>
+                        <style>
+                            .custom-textarea {
+                                width: 217px;
+                                height: 100px;
+                                padding: 10px;
+                                resize: none;
+                            }
+                        </style>
+                    </div>
+                    <div>
+                        <figure style="position: relative; align-items: center; display: flex; z-index: 1; bottom: 16px; left: 24px; padding-top: 80px; padding-left: 10px" class="profile-avatar">
+                            <img src="{{ user.profile_img.url }}" alt="sign up image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff;" class="profile-img">
+                        </figure>
+                        <p style="padding-left: 30px; margin-top: -50px;">Current Profile Picture</p>
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+</body>
+</html>

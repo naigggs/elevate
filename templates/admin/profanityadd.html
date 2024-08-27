@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profanity Words</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: "Source Sans Pro", sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container123 {
+            background-color: white;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            margin-left: 300px;
+            margin-right: 300px;
+        }
+        h2 {
+        font-family: 'Source Sans Pro', sans-serif;
+        color: #333;
+    }
+        
+        form {
+            margin-top: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .btn {
+            margin-left: 10px;
+        }
+    </style>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+          <link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+          <link rel="stylesheet" type="text/css" href="{% static 'profileassets/dist/style.css' %}">
+</head>
+<body>
+  <div style="display: flex; justify-content: space-between;" class="search-bar">
+      
+    <form method="get" action="{% url 'user_search' %}">
+      <input type="text" style="width: 1100px;" name="username" placeholder="Search users">
+      <!-- <button type="submit">Search</button> -->
+  </form>
+  <div style="padding-top: 23px; padding-right: 75px; margin-bottom: 10px;">
+    <span style="border-right: 1px solid #ebebeb; padding-right: 10px;">
+        {{request.user.first_name}} {{request.user.last_name}}
+    </span>
+    <a href="{% url 'friend_requests' %}" style="margin-left: 20px;">Friend Requests</a>
+    <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+    <a href="{% url 'profile' username=request.user.username %}" style="margin-left: 20px;">Profile</a>
+    <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+    <a href="{% url 'logout' %}"style="margin-left: 20px;">Logout</a>
+    <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+    {% if request.user.admin %}
+    <a href="{% url 'user_list' %}"style="margin-left: 20px;">User List</a>
+    <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+    <a href="{% url 'add_profanity_word' %}"style="margin-left: 20px;">Add Profanity Word</a>
+    <span style="border-right: 1px solid #ebebeb; padding-left: 10px; padding-right: 10px;"></span>
+    
+{% else %}
+  <div></div>
+{% endif %}
+</div>
+
+  
+</div>
+    <div class="container123">
+        <h2>Add Profanity Word</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Add Word</button>
+        </form>
+    </div>
+
+    <div class="container123">
+        <h2>Profanity Words</h2>
+        <ul>
+            {% for word in profanity_words %}
+                <li>
+                    {{ word.word }}
+                    <form method="post" action="{% url 'delete_profanity_word' word.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" style="position: absolute; left: 1540px;">Delete</button>
+
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script src='https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.4/dist/alpine.js'></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

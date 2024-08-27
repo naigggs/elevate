@@ -1,0 +1,82 @@
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Profile - {{ user.username }}</title>
+  <style>
+    .profile:before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+        left: 0;
+        top: 0;
+        background-image: url("{{ user.cover_img.url }}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        filter: blur(50px);
+        opacity: 0.7;
+    }
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'profileassets/dist/style.css' %}">
+
+</head>
+<body>
+  <div class="main">
+    <div style="display: flex; justify-content: space-between;" class="search-bar">
+      
+      <form method="get" action="{% url 'user_search' %}">
+        <input type="text" style="width: 1100px;" name="username" placeholder="Search users">
+        <!-- <button type="submit">Search</button> -->
+    </form>
+      <div>Logged in as: {{request.user.first_name}} {{request.user.last_name}}</div>
+      <div><a href="{% url 'profile' username=request.user.username %}">Profile</a></div>
+      <div><a href="{% url 'logout' %}">Logout</a></div>
+  </div>
+    <div class="main-container">
+      
+      <div class="timeline">
+        <div class="timeline-left">
+
+          <div class="pages box">
+            <div class="intro-title">
+              Search results
+        
+            </div>
+          <div>
+            <ul style="list-style-type: none;">
+             
+                {% for user in results %}
+                  <li>
+                      <div class="user">
+                              <img src="{{ user.profile_img.url }}" alt="" class="profile-img" style="width: 75px; height: 75px; object-fit: cover; margin-left: -30px;">
+                          </a>
+                          <div class="username">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'profile' user.username %}">{{ user.username }} ({{user.first_name}} {{user.last_name}})</a>
+                          </div>
+                      </div>
+                  </li>
+                  {% empty %}
+                  <p>No results found.</p>
+                  {% endfor %}
+          </ul>
+        </div>
+      </div>
+      </div>
+      
+          </div>
+         
+
+<!-- partial -->
+  <script src='https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.4/dist/alpine.js'></script>
+</body>
+</html>
+
+{% endblock %}
